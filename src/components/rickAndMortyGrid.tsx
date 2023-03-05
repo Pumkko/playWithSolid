@@ -1,3 +1,4 @@
+import { useBeforeLeave } from "@solidjs/router";
 import { ColDef } from "ag-grid-community";
 import { GetRowIdParams } from "ag-grid-community/dist/lib/interfaces/iCallbackParams";
 import "ag-grid-community/styles/ag-grid.css"; // grid core CSS
@@ -54,6 +55,7 @@ export function RickAndMortyCharacterGrid(
       flex: 1,
     },
   ];
+
   return (
     <div style={{ height: "500px" }} class="ag-theme-alpine">
       <AgGridSolid
