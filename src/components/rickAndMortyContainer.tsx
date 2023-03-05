@@ -1,4 +1,4 @@
-import { Switch, Match, Show } from "solid-js";
+import { Match, Show, Switch } from "solid-js";
 import { RickAndMortyCharacterGrid } from "./rickAndMortyGrid";
 import { useRickAndMorty } from "./rickAndMortyProvider";
 
@@ -17,14 +17,14 @@ export function RickAndMortyContainer() {
         ></RickAndMortyCharacterGrid>
 
         <button
-          disabled={context!.mutation.isLoading}
+          disabled={context!.turnIntoAlien.isLoading}
           onclick={() => {
-            context!.mutation.mutateAsync().then(() => alert("hoi"));
+            context!.turnIntoAlien.mutateAsync().then(() => alert("hoi"));
           }}
           type="button"
           class="text-white bg-sky-800 hover:bg-sky-600 focus:ring-4 mt-2 focus:outline-none focus:ring-blue-300  disabled:cursor-not-allowed  font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 inline-flex items-center"
         >
-          <Show when={context!.mutation.isLoading}>
+          <Show when={context!.turnIntoAlien.isLoading}>
             <svg
               aria-hidden="true"
               role="status"

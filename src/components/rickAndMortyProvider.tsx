@@ -11,7 +11,7 @@ import { RickAndMortyCharacter } from "./rickAndMortyCharacter";
 
 interface RickAndMortyContextProps {
   query: CreateQueryResult<RickAndMortyCharacter[], unknown>;
-  mutation: CreateMutationResult<unknown, unknown, void, void>;
+  turnIntoAlien: CreateMutationResult<unknown, unknown, void, void>;
 }
 
 const RickAndMortyContext = createContext<RickAndMortyContextProps>();
@@ -19,7 +19,7 @@ const RickAndMortyContext = createContext<RickAndMortyContextProps>();
 export function RickAndMortyProvider(props: any) {
   const queryClient = useQueryClient();
 
-  const mutation = createMutation(["updateRickSanchez"], {
+  const turnIntoAlien = createMutation(["updateRickSanchez"], {
     mutationFn: () => {
       return new Promise((resolve) => {
         setTimeout(() => {
@@ -34,7 +34,9 @@ export function RickAndMortyProvider(props: any) {
         ]) as RickAndMortyCharacter[]
       );
 
-      characters[0].name = "HOOOO";
+      characters.forEach((c) => {
+        c.species = "Alien";
+      });
       queryClient.setQueryData(["rickAndMortyCharacters"], characters);
     },
   });
@@ -44,16 +46,16 @@ export function RickAndMortyProvider(props: any) {
       const response = await fetch("https://rickandmortyapi.com/api/character");
       const characters = (await response.json())
         .results as RickAndMortyCharacter[];
-      return new Promise((resolve) => {
+      return new Promise<RickAndMortyCharacter[]>((resolve) => {
         setTimeout(() => {
           resolve(characters);
-        }, 10000);
+        }, 3000);
       });
     },
   });
 
   return (
-    <RickAndMortyContext.Provider value={{ query, mutation }}>
+    <RickAndMortyContext.Provider value={{ query, turnIntoAlien }}>
       {props.children}
     </RickAndMortyContext.Provider>
   );
