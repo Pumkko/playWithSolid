@@ -12,9 +12,7 @@ export function RickAndMortyContainer() {
         <p>Loading...</p>
       </Match>
       <Match when={context!.query.isSuccess}>
-        <RickAndMortyCharacterGrid
-          characters={context!.query.data!}
-        ></RickAndMortyCharacterGrid>
+        <RickAndMortyCharacterGrid></RickAndMortyCharacterGrid>
 
         <button
           disabled={context!.turnIntoAlien.isLoading}

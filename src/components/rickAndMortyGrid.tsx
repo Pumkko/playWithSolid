@@ -1,18 +1,14 @@
-import { useBeforeLeave } from "@solidjs/router";
 import { ColDef } from "ag-grid-community";
 import { GetRowIdParams } from "ag-grid-community/dist/lib/interfaces/iCallbackParams";
 import "ag-grid-community/styles/ag-grid.css"; // grid core CSS
 import "ag-grid-community/styles/ag-theme-alpine.css"; // optional theme
 import AgGridSolid from "ag-grid-solid";
 import { RickAndMortyCharacter } from "./rickAndMortyCharacter";
+import { useRickAndMorty } from "./rickAndMortyProvider";
 
-export interface RickAndMortyCharacterGridProps {
-  characters: RickAndMortyCharacter[];
-}
+export function RickAndMortyCharacterGrid() {
+  const context = useRickAndMorty();
 
-export function RickAndMortyCharacterGrid(
-  props: RickAndMortyCharacterGridProps
-) {
   const columnDefs: ColDef<RickAndMortyCharacter>[] = [
     {
       headerName: "Name",
@@ -62,9 +58,9 @@ export function RickAndMortyCharacterGrid(
         getRowId={(params: GetRowIdParams<RickAndMortyCharacter>) =>
           params.data.id.toString()
         }
-        rowData={props.characters} // use signal
-        columnDefs={columnDefs} // no signal
-        rowSelection="single" // no signal, inline
+        rowData={context?.query.data}
+        columnDefs={columnDefs}
+        rowSelection="single"
       />
     </div>
   );
