@@ -54,15 +54,17 @@ export function RickAndMortyCharacterGrid() {
   ];
 
   return (
-    <div style={{ height: "500px" }} class="ag-theme-alpine">
-      <AgGridSolid
-        getRowId={(params: GetRowIdParams<RickAndMortyCharacter>) =>
-          params.data.id.toString()
-        }
-        rowData={context?.query.data}
-        columnDefs={columnDefs}
-        rowSelection="single"
-      />
-    </div>
+    <>
+      <div style={{ height: "500px" }} class="ag-theme-alpine">
+        <AgGridSolid
+          getRowId={(params: GetRowIdParams<RickAndMortyCharacter>) =>
+            params.data.id.toString()
+          }
+          rowData={context?.query.data}
+          columnDefs={columnDefs}
+          rowSelection="single"
+        />
+      </div>
+    </>
   );
 }
