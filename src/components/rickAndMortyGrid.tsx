@@ -3,6 +3,7 @@ import { GetRowIdParams } from "ag-grid-community/dist/lib/interfaces/iCallbackP
 import "ag-grid-community/styles/ag-grid.css"; // grid core CSS
 import "ag-grid-community/styles/ag-theme-alpine.css"; // optional theme
 import AgGridSolid from "ag-grid-solid";
+import { RickAndMortySpeciesGridHeader } from "./GridComponents/rickAndMortySpeciesGridHeader";
 import { RickAndMortyCharacter } from "./rickAndMortyCharacter";
 import { useRickAndMorty } from "./rickAndMortyProvider";
 
@@ -21,7 +22,7 @@ export function RickAndMortyCharacterGrid() {
       flex: 1,
     },
     {
-      headerName: "Species",
+      headerComponent: RickAndMortySpeciesGridHeader,
       valueGetter: (params) => params?.data && params.data.species,
       flex: 1,
     },

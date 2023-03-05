@@ -24,7 +24,7 @@ export function RickAndMortyProvider(props: any) {
       return new Promise((resolve) => {
         setTimeout(() => {
           resolve(true);
-        }, 10000);
+        }, 1000);
       });
     },
     onMutate: () => {
@@ -49,7 +49,7 @@ export function RickAndMortyProvider(props: any) {
       return new Promise<RickAndMortyCharacter[]>((resolve) => {
         setTimeout(() => {
           resolve(characters);
-        }, 3000);
+        }, 1000);
       });
     },
   });

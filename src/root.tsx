@@ -2,7 +2,6 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/solid-query";
 import { Suspense } from "solid-js";
 import {
-  useLocation,
   A,
   Body,
   ErrorBoundary,
@@ -13,10 +12,17 @@ import {
   Routes,
   Scripts,
   Title,
+  useLocation,
 } from "solid-start";
 import "./root.css";
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+    },
+  },
+});
 
 export default function Root() {
   const location = useLocation();
