@@ -1,4 +1,3 @@
-import { createMemo } from "solid-js";
 import { useRickAndMorty } from "../rickAndMortyProvider";
 
 export function RickAndMortySpeciesGridHeader() {
@@ -8,13 +7,9 @@ export function RickAndMortySpeciesGridHeader() {
     return null;
   }
 
-  const allAliens = createMemo(() => {
-    if (context?.query.data === undefined) {
-      return false;
-    }
-
-    return context.query.data.every((c) => c.species === "Alien");
-  });
+  // createMemo can also work
+  const allAliens = () =>
+    context?.query?.data?.every((c) => c.species === "Alien") ?? false;
 
   return (
     <div class="flex items-center mr-4">
