@@ -1,12 +1,38 @@
+import {
+  createMutation,
+  createQuery,
+  useQueryClient,
+} from "@tanstack/solid-query";
+import _ from "lodash";
 import { Match, Switch } from "solid-js";
-import { A, createRouteData } from "solid-start";
+import { A } from "solid-start";
 import { RickAndMortyCharacter } from "~/components/rickAndMortyCharacter";
 import { RickAndMortyCharacterGrid } from "~/components/rickAndMotyGrid";
 
 export default function Grid() {
-  const data = createRouteData(async () => {
-    const response = await fetch("https://rickandmortyapi.com/api/character");
-    return (await response.json()).results as RickAndMortyCharacter[];
+  const queryClient = useQueryClient();
+
+  const query = createQuery(() => ["rickAndMortyCharacters"], {
+    queryFn: async () => {
+      const response = await fetch("https://rickandmortyapi.com/api/character");
+      return (await response.json()).results as RickAndMortyCharacter[];
+    },
+  });
+
+  const mutation = createMutation(["updateRickSanchez"], {
+    mutationFn: () => {
+      return Promise.resolve(true);
+    },
+    onMutate: () => {
+      const characters = _.cloneDeep(
+        queryClient.getQueryData([
+          "rickAndMortyCharacters",
+        ]) as RickAndMortyCharacter[]
+      );
+
+      characters[0].name = "HOOOO";
+      queryClient.setQueryData(["rickAndMortyCharacters"], characters);
+    },
   });
 
   return (
@@ -16,14 +42,19 @@ export default function Grid() {
       </h1>
 
       <Switch>
-        <Match when={data.loading}>
+        <Match when={query.isLoading}>
           <p>Loading...</p>
         </Match>
-        <Match when={data.latest}>
+        <Match when={query.isSuccess}>
           <RickAndMortyCharacterGrid
-            characters={data.latest ?? []}
+            characters={query.data!}
           ></RickAndMortyCharacterGrid>
-          <button class="bg-sky-800 hover:bg-sky-600 text-white font-bold py-2 px-4 rounded mt-2">
+          <button
+            onclick={() => {
+              mutation.mutate();
+            }}
+            class="bg-sky-800 hover:bg-sky-600 text-white font-bold py-2 px-4 rounded mt-2"
+          >
             Button
           </button>
         </Match>

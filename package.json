@@ -17,8 +17,11 @@
   "dependencies": {
     "@solidjs/meta": "^0.28.2",
     "@solidjs/router": "^0.7.0",
+    "@tanstack/solid-query": "^4.26.0",
+    "@types/lodash": "^4.14.191",
     "ag-grid-community": "^29.1.0",
     "ag-grid-solid": "^29.1.0",
+    "lodash": "^4.17.21",
     "solid-js": "^1.6.11",
     "solid-start": "^0.2.23",
     "undici": "^5.15.1"

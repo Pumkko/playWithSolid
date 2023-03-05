@@ -1,4 +1,5 @@
 import { ColDef } from "ag-grid-community";
+import { GetRowIdParams } from "ag-grid-community/dist/lib/interfaces/iCallbackParams";
 import "ag-grid-community/styles/ag-grid.css"; // grid core CSS
 import "ag-grid-community/styles/ag-theme-alpine.css"; // optional theme
 import AgGridSolid from "ag-grid-solid";
@@ -56,6 +57,9 @@ export function RickAndMortyCharacterGrid(
   return (
     <div style={{ height: "500px" }} class="ag-theme-alpine">
       <AgGridSolid
+        getRowId={(params: GetRowIdParams<RickAndMortyCharacter>) =>
+          params.data.id.toString()
+        }
         rowData={props.characters} // use signal
         columnDefs={columnDefs} // no signal
         rowSelection="single" // no signal, inline

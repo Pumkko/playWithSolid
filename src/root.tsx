@@ -1,5 +1,5 @@
 // @refresh reload
-
+import { QueryClient, QueryClientProvider } from "@tanstack/solid-query";
 import { Suspense } from "solid-js";
 import {
   useLocation,
@@ -15,6 +15,8 @@ import {
   Title,
 } from "solid-start";
 import "./root.css";
+
+const queryClient = new QueryClient();
 
 export default function Root() {
   const location = useLocation();
@@ -32,22 +34,24 @@ export default function Root() {
       <Body>
         <Suspense>
           <ErrorBoundary>
-            <nav class="bg-sky-800">
-              <ul class="container flex items-center p-3 text-gray-200">
-                <li class={`border-b-2 ${active("/")} mx-1.5 sm:mx-6`}>
-                  <A href="/">Home</A>
-                </li>
-                <li class={`border-b-2 ${active("/about")} mx-1.5 sm:mx-6`}>
-                  <A href="/about">About</A>
-                </li>
-                <li class={`border-b-2 ${active("/grid")} mx-1.5 sm:mx-6`}>
-                  <A href="/grid">Grid</A>
-                </li>
-              </ul>
-            </nav>
-            <Routes>
-              <FileRoutes />
-            </Routes>
+            <QueryClientProvider client={queryClient}>
+              <nav class="bg-sky-800">
+                <ul class="container flex items-center p-3 text-gray-200">
+                  <li class={`border-b-2 ${active("/")} mx-1.5 sm:mx-6`}>
+                    <A href="/">Home</A>
+                  </li>
+                  <li class={`border-b-2 ${active("/about")} mx-1.5 sm:mx-6`}>
+                    <A href="/about">About</A>
+                  </li>
+                  <li class={`border-b-2 ${active("/grid")} mx-1.5 sm:mx-6`}>
+                    <A href="/grid">Grid</A>
+                  </li>
+                </ul>
+              </nav>
+              <Routes>
+                <FileRoutes />
+              </Routes>
+            </QueryClientProvider>
           </ErrorBoundary>
         </Suspense>
         <Scripts />
