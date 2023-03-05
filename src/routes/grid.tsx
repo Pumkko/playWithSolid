@@ -1,6 +1,6 @@
 import { A } from "solid-start";
-import { RickAndMortyContainer } from "~/components/rickAndMortyContainer";
-import { RickAndMortyProvider } from "~/components/rickAndMortyProvider";
+import { RickAndMortyContainer } from "~/components/rickAndMorty/rickAndMortyContainer";
+import { RickAndMortyProvider } from "~/components/rickAndMorty/rickAndMortyProvider";
 
 export default function Grid() {
   return (
@@ -10,7 +10,7 @@ export default function Grid() {
       </h1>
 
       <RickAndMortyProvider>
-        <RickAndMortyContainer></RickAndMortyContainer>
+        <RickAndMortyContainer />
       </RickAndMortyProvider>
       <p class="my-4">
         <A href="/" class="text-sky-600 hover:underline">
