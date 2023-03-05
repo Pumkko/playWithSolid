@@ -11,7 +11,12 @@ import { RickAndMortyCharacter } from "./rickAndMortyCharacter";
 
 interface RickAndMortyContextProps {
   query: CreateQueryResult<RickAndMortyCharacter[], unknown>;
-  turnIntoAlien: CreateMutationResult<unknown, unknown, void, void>;
+  turnIntoAlien: CreateMutationResult<
+    unknown,
+    unknown,
+    number | undefined,
+    void
+  >;
 }
 
 const RickAndMortyContext = createContext<RickAndMortyContextProps>();
@@ -27,16 +32,23 @@ export function RickAndMortyProvider(props: any) {
         }, 1000);
       });
     },
-    onMutate: () => {
+    onMutate: (id?: number) => {
       const characters = _.cloneDeep(
         queryClient.getQueryData([
           "rickAndMortyCharacters",
         ]) as RickAndMortyCharacter[]
       );
 
-      characters.forEach((c) => {
-        c.species = "Alien";
-      });
+      if (id === undefined) {
+        characters.forEach((c) => {
+          c.species = "Alien";
+        });
+      } else {
+        const c = characters.find((x) => x.id === id);
+        if (c) {
+          c.species = "Alien";
+        }
+      }
       queryClient.setQueryData(["rickAndMortyCharacters"], characters);
     },
   });

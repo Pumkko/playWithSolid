@@ -24,6 +24,19 @@ export function RickAndMortyCharacterGrid() {
     {
       headerComponent: RickAndMortySpeciesGridHeader,
       valueGetter: (params) => params?.data && params.data.species,
+      editable: true,
+      valueSetter: (params) => {
+        if (
+          params.newValue === params.oldValue ||
+          params?.data === undefined ||
+          context === undefined
+        ) {
+          return false;
+        }
+
+        context.turnIntoAlien.mutate(params.data.id);
+        return true;
+      },
       flex: 1,
     },
     {
