@@ -91,7 +91,11 @@ export default function Grid() {
           Home
         </A>
         {" - "}
-        <span>About Page</span>
+        <A href="/about" class="text-sky-600 hover:underline">
+          About
+        </A>
+        {" - "}
+        <span>Grid Page</span>
       </p>
     </main>
   );

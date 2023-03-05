@@ -22,7 +22,11 @@ export default function Home() {
         {" - "}
         <A href="/about" class="text-sky-600 hover:underline">
           About Page
-        </A>{" "}
+        </A>
+        {" - "}
+        <A href="/grid" class="text-sky-600 hover:underline">
+          Grid Page
+        </A>
       </p>
     </main>
   );

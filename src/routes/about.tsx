@@ -23,6 +23,10 @@ export default function About() {
         </A>
         {" - "}
         <span>About Page</span>
+        {" - "}
+        <A href="/grid" class="text-sky-600 hover:underline">
+          Grid Page
+        </A>
       </p>
     </main>
   );
