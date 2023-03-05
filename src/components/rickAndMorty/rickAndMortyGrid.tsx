@@ -3,9 +3,9 @@ import { GetRowIdParams } from "ag-grid-community/dist/lib/interfaces/iCallbackP
 import "ag-grid-community/styles/ag-grid.css"; // grid core CSS
 import "ag-grid-community/styles/ag-theme-alpine.css"; // optional theme
 import AgGridSolid from "ag-grid-solid";
-import { RickAndMortySpeciesGridHeader } from "./GridComponents/rickAndMortySpeciesGridHeader";
 import { RickAndMortyCharacter } from "./rickAndMortyCharacter";
 import { useRickAndMorty } from "./rickAndMortyProvider";
+import { RickAndMortySpeciesGridHeader } from "./rickAndMortySpeciesGridHeader";
 
 export function RickAndMortyCharacterGrid() {
   const context = useRickAndMorty();

@@ -1,4 +1,4 @@
-import { useRickAndMorty } from "../rickAndMortyProvider";
+import { useRickAndMorty } from "./rickAndMortyProvider";
 
 export function RickAndMortySpeciesGridHeader() {
   const context = useRickAndMorty();
