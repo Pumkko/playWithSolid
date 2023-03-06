@@ -1,8 +1,9 @@
-import { ColDef } from "ag-grid-community";
+import { ColDef, ICellRendererParams } from "ag-grid-community";
 import { GetRowIdParams } from "ag-grid-community/dist/lib/interfaces/iCallbackParams";
 import "ag-grid-community/styles/ag-grid.css"; // grid core CSS
 import "ag-grid-community/styles/ag-theme-alpine.css"; // optional theme
 import AgGridSolid from "ag-grid-solid";
+import { PencilSquareIcon } from "../editIcon";
 import { RickAndMortyCharacter } from "./rickAndMortyCharacter";
 import { useRickAndMorty } from "./rickAndMortyProvider";
 import { RickAndMortySpeciesGridHeader } from "./rickAndMortySpeciesGridHeader";
@@ -22,8 +23,25 @@ export function RickAndMortyCharacterGrid() {
       flex: 1,
     },
     {
+      colId: "species",
       headerComponent: RickAndMortySpeciesGridHeader,
       valueGetter: (params) => params?.data && params.data.species,
+      cellRenderer: (params: ICellRendererParams<RickAndMortyCharacter>) => {
+        return (
+          <div class="inline-flex items-center justify-between w-full">
+            {params.value}{" "}
+            <PencilSquareIcon
+              onClick={() => {
+                params.api.startEditingCell({
+                  colKey: "species",
+                  rowIndex: params.rowIndex,
+                });
+              }}
+              class="h-6 w-6 text-gray-500 cursor-pointer"
+            />
+          </div>
+        );
+      },
       editable: true,
       valueSetter: (params) => {
         if (
@@ -68,14 +86,14 @@ export function RickAndMortyCharacterGrid() {
 
   return (
     <>
-      <div style={{ height: "500px" }} class="ag-theme-alpine">
+      <div style={{ height: "60vh" }} class="ag-theme-alpine">
         <AgGridSolid
           getRowId={(params: GetRowIdParams<RickAndMortyCharacter>) =>
             params.data.id.toString()
           }
           rowData={context?.query.data}
           columnDefs={columnDefs}
-          rowSelection="single"
+          suppressRowClickSelection={true}
         />
       </div>
     </>
