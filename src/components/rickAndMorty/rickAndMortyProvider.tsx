@@ -9,6 +9,12 @@ import _ from "lodash";
 import { createContext, useContext } from "solid-js";
 import { RickAndMortyCharacter } from "./rickAndMortyCharacter";
 
+export interface RickAndMortySpecieChange {
+  id: RickAndMortyCharacter["id"];
+  oldSpecie: string;
+  newSpecie: string;
+}
+
 interface RickAndMortyContextProps {
   query: CreateQueryResult<RickAndMortyCharacter[], unknown>;
   turnIntoAlien: CreateMutationResult<

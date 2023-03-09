@@ -1,13 +1,36 @@
-import { Match, Show, Switch } from "solid-js";
+import _ from "lodash";
+import { createEffect, createSignal, Match, Show, Switch } from "solid-js";
+import { createMutable, modifyMutable, reconcile } from "solid-js/store";
 import { LoadingSpinner } from "../loadingSpinner";
+import { RickAndMortyCharacter } from "./rickAndMortyCharacter";
 import { RickAndMortyCharacterGrid } from "./rickAndMortyGrid";
-import { useRickAndMorty } from "./rickAndMortyProvider";
+import {
+  RickAndMortySpecieChange,
+  useRickAndMorty,
+} from "./rickAndMortyProvider";
 
 export function RickAndMortyContainer() {
   const context = useRickAndMorty();
 
+  const rickAndMortyMutableStore = createMutable<RickAndMortyCharacter[]>([]);
+
+  createEffect(() => {
+    modifyMutable(
+      rickAndMortyMutableStore,
+      reconcile(_.cloneDeep(context?.query.data) ?? [])
+    );
+  });
+
+  const [pendingChanges, setPendingChanges] = createSignal<
+    RickAndMortySpecieChange[]
+  >([]);
+
+  const onValueChanged = (change: RickAndMortySpecieChange) => {
+    setPendingChanges([...pendingChanges(), change]);
+  };
+
   const allAliens = () =>
-    context?.query?.data?.every((c) => c.species === "Alien") ?? false;
+    rickAndMortyMutableStore.every((c) => c.species === "Alien") ?? false;
 
   return (
     <Switch>
@@ -16,7 +39,10 @@ export function RickAndMortyContainer() {
         <p>Loading...</p>
       </Match>
       <Match when={context!.query.isSuccess}>
-        <RickAndMortyCharacterGrid></RickAndMortyCharacterGrid>
+        <RickAndMortyCharacterGrid
+          rickAndMortyCharacters={rickAndMortyMutableStore}
+          onValueChanged={onValueChanged}
+        ></RickAndMortyCharacterGrid>
 
         <button
           disabled={context!.turnIntoAlien.isLoading}

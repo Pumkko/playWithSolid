@@ -5,10 +5,20 @@ import "ag-grid-community/styles/ag-theme-alpine.css"; // optional theme
 import AgGridSolid from "ag-grid-solid";
 import { PencilSquareIcon } from "../editIcon";
 import { RickAndMortyCharacter } from "./rickAndMortyCharacter";
-import { useRickAndMorty } from "./rickAndMortyProvider";
+import {
+  RickAndMortySpecieChange,
+  useRickAndMorty,
+} from "./rickAndMortyProvider";
 import { RickAndMortySpeciesGridHeader } from "./rickAndMortySpeciesGridHeader";
 
-export function RickAndMortyCharacterGrid() {
+export interface RickAndMortyCharactersGridProps {
+  rickAndMortyCharacters: RickAndMortyCharacter[];
+  onValueChanged: (change: RickAndMortySpecieChange) => void;
+}
+
+export function RickAndMortyCharacterGrid(
+  props: RickAndMortyCharactersGridProps
+) {
   const context = useRickAndMorty();
 
   const columnDefs: ColDef<RickAndMortyCharacter>[] = [
@@ -52,7 +62,15 @@ export function RickAndMortyCharacterGrid() {
           return false;
         }
 
-        context.turnIntoAlien.mutate(params.data.id);
+        params.data.species = params.newValue;
+
+        props.onValueChanged({
+          id: params.data.id,
+          newSpecie: params.newValue,
+          oldSpecie: params.oldValue,
+        });
+        params.api.stopEditing();
+
         return true;
       },
       flex: 1,
@@ -91,7 +109,8 @@ export function RickAndMortyCharacterGrid() {
           getRowId={(params: GetRowIdParams<RickAndMortyCharacter>) =>
             params.data.id.toString()
           }
-          rowData={context?.query.data}
+          // avoid a bug where agGrid tries to access the api through the option but it's undefined
+          onGridReady={(e) => e.api.setRowData(props.rickAndMortyCharacters)}
           columnDefs={columnDefs}
           suppressRowClickSelection={true}
         />
