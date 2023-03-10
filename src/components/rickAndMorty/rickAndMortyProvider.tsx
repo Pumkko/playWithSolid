@@ -66,6 +66,8 @@ export function RickAndMortyProvider(props: any) {
     },
   });
 
+  
+
   return (
     <RickAndMortyContext.Provider value={{ query, turnIntoAlien }}>
       {props.children}
