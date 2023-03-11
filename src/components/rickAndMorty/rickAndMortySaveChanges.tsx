@@ -55,7 +55,7 @@ export function RickAndMortySaveChanges() {
       <Show when={turnIntoAlienMutation.isLoading}>
         <LoadingSpinner />
       </Show>
-      Save Changes
+      Save {context?.pendingChanges.length} Changes
     </button>
   );
 }
