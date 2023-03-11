@@ -1,10 +1,4 @@
-import {
-  createMutation,
-  CreateMutationResult,
-  createQuery,
-  CreateQueryResult,
-  useQueryClient,
-} from "@tanstack/solid-query";
+import { createQuery, CreateQueryResult } from "@tanstack/solid-query";
 import _ from "lodash";
 import { batch, createContext, createEffect, useContext } from "solid-js";
 import { createMutable, modifyMutable, reconcile } from "solid-js/store";
@@ -18,13 +12,6 @@ interface RickAndMortySpecieChange {
 
 interface RickAndMortyContextProps {
   query: CreateQueryResult<RickAndMortyCharacter[], unknown>;
-  turnIntoAlienMutation: CreateMutationResult<
-    unknown,
-    unknown,
-    number | undefined,
-    void
-  >;
-
   pendingChanges: RickAndMortySpecieChange[];
   rickAndMortyCharacterStore: RickAndMortyCharacter[];
   turnIntoAlien: (id?: number) => void;
@@ -34,37 +21,6 @@ interface RickAndMortyContextProps {
 const RickAndMortyContext = createContext<RickAndMortyContextProps>();
 
 export function RickAndMortyProvider(props: any) {
-  const queryClient = useQueryClient();
-
-  const turnIntoAlienMutation = createMutation(["updateRickSanchez"], {
-    mutationFn: () => {
-      return new Promise((resolve) => {
-        setTimeout(() => {
-          resolve(true);
-        }, 1000);
-      });
-    },
-    onMutate: (id?: number) => {
-      const characters = _.cloneDeep(
-        queryClient.getQueryData([
-          "rickAndMortyCharacters",
-        ]) as RickAndMortyCharacter[]
-      );
-
-      if (id === undefined) {
-        characters.forEach((c) => {
-          c.species = "Alien";
-        });
-      } else {
-        const c = characters.find((x) => x.id === id);
-        if (c) {
-          c.species = "Alien";
-        }
-      }
-      queryClient.setQueryData(["rickAndMortyCharacters"], characters);
-    },
-  });
-
   const query = createQuery(() => ["rickAndMortyCharacters"], {
     queryFn: async () => {
       const response = await fetch("https://rickandmortyapi.com/api/character");
@@ -119,7 +75,6 @@ export function RickAndMortyProvider(props: any) {
       value={{
         query,
         turnIntoAlien,
-        turnIntoAlienMutation,
         pendingChanges,
         rickAndMortyCharacterStore,
         refetch,

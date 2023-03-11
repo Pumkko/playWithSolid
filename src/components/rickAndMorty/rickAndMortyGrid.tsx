@@ -108,7 +108,6 @@ export function RickAndMortyCharacterGrid() {
         />
       </div>
       <button
-        disabled={context!.turnIntoAlienMutation.isLoading}
         onclick={() => {
           context!.refetch().then(() => gridApi()?.refreshCells());
         }}
@@ -122,7 +121,7 @@ export function RickAndMortyCharacterGrid() {
       </button>
 
       <button
-        disabled={context!.turnIntoAlienMutation.isLoading || allAliens()}
+        disabled={allAliens()}
         onclick={() => {
           context?.turnIntoAlien();
 
@@ -131,9 +130,6 @@ export function RickAndMortyCharacterGrid() {
         type="button"
         class="text-white bg-sky-800 hover:bg-sky-600 focus:ring-4 mt-2 focus:outline-none focus:ring-blue-300  disabled:cursor-not-allowed disabled:opacity-70  font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 inline-flex items-center"
       >
-        <Show when={context!.turnIntoAlienMutation.isLoading}>
-          <LoadingSpinner />
-        </Show>
         Turn into Aliens
       </button>
     </>
