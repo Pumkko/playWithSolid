@@ -1,15 +1,23 @@
-import { ColDef, ICellRendererParams } from "ag-grid-community";
+import { ColDef, GridApi, ICellRendererParams } from "ag-grid-community";
 import { GetRowIdParams } from "ag-grid-community/dist/lib/interfaces/iCallbackParams";
 import "ag-grid-community/styles/ag-grid.css"; // grid core CSS
 import "ag-grid-community/styles/ag-theme-alpine.css"; // optional theme
 import AgGridSolid from "ag-grid-solid";
+import { createSignal, Show } from "solid-js";
 import { PencilSquareIcon } from "../editIcon";
+import { LoadingSpinner } from "../loadingSpinner";
 import { RickAndMortyCharacter } from "./rickAndMortyCharacter";
 import { useRickAndMorty } from "./rickAndMortyProvider";
 import { RickAndMortySpeciesGridHeader } from "./rickAndMortySpeciesGridHeader";
 
 export function RickAndMortyCharacterGrid() {
   const context = useRickAndMorty();
+
+  const allAliens = () =>
+    context?.rickAndMortyCharacterStore.every((c) => c.species === "Alien") ??
+    false;
+
+  const [gridApi, setGridApi] = createSignal<GridApi>();
 
   const columnDefs: ColDef<RickAndMortyCharacter>[] = [
     {
@@ -52,7 +60,7 @@ export function RickAndMortyCharacterGrid() {
           return false;
         }
 
-        context.turnIntoAlien.mutate(params.data.id);
+        context?.turnIntoAlien(params.data.id);
         return true;
       },
       flex: 1,
@@ -91,11 +99,43 @@ export function RickAndMortyCharacterGrid() {
           getRowId={(params: GetRowIdParams<RickAndMortyCharacter>) =>
             params.data.id.toString()
           }
-          rowData={context?.query.data}
+          onGridReady={(event) => {
+            setGridApi(event.api);
+            event.api.setRowData(context?.rickAndMortyCharacterStore ?? []);
+          }}
           columnDefs={columnDefs}
           suppressRowClickSelection={true}
         />
       </div>
+      <button
+        disabled={context!.turnIntoAlienMutation.isLoading}
+        onclick={() => {
+          context!.refetch().then(() => gridApi()?.refreshCells());
+        }}
+        type="button"
+        class="text-white bg-sky-800 hover:bg-sky-600 focus:ring-4 mt-2 focus:outline-none focus:ring-blue-300  disabled:cursor-not-allowed  font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 inline-flex items-center"
+      >
+        <Show when={context!.query.isRefetching}>
+          <LoadingSpinner />
+        </Show>
+        Refetch
+      </button>
+
+      <button
+        disabled={context!.turnIntoAlienMutation.isLoading || allAliens()}
+        onclick={() => {
+          context?.turnIntoAlien();
+
+          gridApi()?.refreshCells();
+        }}
+        type="button"
+        class="text-white bg-sky-800 hover:bg-sky-600 focus:ring-4 mt-2 focus:outline-none focus:ring-blue-300  disabled:cursor-not-allowed disabled:opacity-70  font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 inline-flex items-center"
+      >
+        <Show when={context!.turnIntoAlienMutation.isLoading}>
+          <LoadingSpinner />
+        </Show>
+        Turn into Aliens
+      </button>
     </>
   );
 }

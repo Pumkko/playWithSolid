@@ -1,15 +1,13 @@
+import { GridApi } from "ag-grid-community";
 import { useRickAndMorty } from "./rickAndMortyProvider";
 
-export function RickAndMortySpeciesGridHeader() {
+export function RickAndMortySpeciesGridHeader(params: { api: GridApi }) {
   const context = useRickAndMorty();
-
-  if (context?.query?.data === undefined) {
-    return null;
-  }
 
   // createMemo can also work
   const allAliens = () =>
-    context?.query?.data?.every((c) => c.species === "Alien") ?? false;
+    context?.rickAndMortyCharacterStore.every((c) => c.species === "Alien") ??
+    false;
 
   return (
     <div class="flex items-center mr-4">
@@ -22,7 +20,8 @@ export function RickAndMortySpeciesGridHeader() {
         onclick={(v) => {
           const isChecked = (v.target as HTMLInputElement).checked;
           if (isChecked) {
-            context.turnIntoAlien.mutate(undefined);
+            context?.turnIntoAlien();
+            params.api.refreshCells();
           }
         }}
         checked={allAliens()}
@@ -31,7 +30,12 @@ export function RickAndMortySpeciesGridHeader() {
         for="inline-checkbox"
         class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300"
       >
-        Alien Species
+        Alien Species{" "}
+        {
+          context?.rickAndMortyCharacterStore.filter(
+            (r) => r.species === "Alien"
+          ).length
+        }
       </label>
     </div>
   );

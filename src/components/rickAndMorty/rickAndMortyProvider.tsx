@@ -6,17 +6,29 @@ import {
   useQueryClient,
 } from "@tanstack/solid-query";
 import _ from "lodash";
-import { createContext, useContext } from "solid-js";
+import { batch, createContext, createEffect, useContext } from "solid-js";
+import { createMutable, modifyMutable, reconcile } from "solid-js/store";
 import { RickAndMortyCharacter } from "./rickAndMortyCharacter";
+
+interface RickAndMortySpecieChange {
+  id: number;
+  newSpecie: string;
+  oldSpecie: string;
+}
 
 interface RickAndMortyContextProps {
   query: CreateQueryResult<RickAndMortyCharacter[], unknown>;
-  turnIntoAlien: CreateMutationResult<
+  turnIntoAlienMutation: CreateMutationResult<
     unknown,
     unknown,
     number | undefined,
     void
   >;
+
+  pendingChanges: RickAndMortySpecieChange[];
+  rickAndMortyCharacterStore: RickAndMortyCharacter[];
+  turnIntoAlien: (id?: number) => void;
+  refetch: () => Promise<void>;
 }
 
 const RickAndMortyContext = createContext<RickAndMortyContextProps>();
@@ -24,7 +36,7 @@ const RickAndMortyContext = createContext<RickAndMortyContextProps>();
 export function RickAndMortyProvider(props: any) {
   const queryClient = useQueryClient();
 
-  const turnIntoAlien = createMutation(["updateRickSanchez"], {
+  const turnIntoAlienMutation = createMutation(["updateRickSanchez"], {
     mutationFn: () => {
       return new Promise((resolve) => {
         setTimeout(() => {
@@ -66,10 +78,53 @@ export function RickAndMortyProvider(props: any) {
     },
   });
 
-  
+  const pendingChanges = createMutable<RickAndMortySpecieChange[]>([]);
+
+  const rickAndMortyCharacterStore = createMutable<RickAndMortyCharacter[]>([]);
+
+  createEffect(() => {
+    modifyMutable(
+      rickAndMortyCharacterStore,
+      reconcile(_.cloneDeep(query.data ?? []))
+    );
+  });
+
+  const refetch = () => {
+    return query.refetch().then(() => {
+      modifyMutable(
+        rickAndMortyCharacterStore,
+        reconcile(_.cloneDeep(query.data ?? []))
+      );
+      modifyMutable(pendingChanges, reconcile([]));
+    });
+  };
+
+  const turnIntoAlien = (id?: number) => {
+    batch(() => {
+      rickAndMortyCharacterStore
+        .filter((r) => (id ? r.id === id : true))
+        .forEach((c) => {
+          pendingChanges.push({
+            id: c.id,
+            newSpecie: "Alien",
+            oldSpecie: c.species,
+          });
+          c.species = "Alien";
+        });
+    });
+  };
 
   return (
-    <RickAndMortyContext.Provider value={{ query, turnIntoAlien }}>
+    <RickAndMortyContext.Provider
+      value={{
+        query,
+        turnIntoAlien,
+        turnIntoAlienMutation,
+        pendingChanges,
+        rickAndMortyCharacterStore,
+        refetch,
+      }}
+    >
       {props.children}
     </RickAndMortyContext.Provider>
   );
