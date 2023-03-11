@@ -10,6 +10,10 @@ import { RickAndMortyCharacter } from "./rickAndMortyCharacter";
 import { useRickAndMorty } from "./rickAndMortyProvider";
 import { RickAndMortySpeciesGridHeader } from "./rickAndMortySpeciesGridHeader";
 
+function StatusRenderer(params: ICellRendererParams<RickAndMortyCharacter[]>) {
+  return <p>{params.value}</p>;
+}
+
 export function RickAndMortyCharacterGrid() {
   const context = useRickAndMorty();
 
@@ -28,6 +32,7 @@ export function RickAndMortyCharacterGrid() {
     {
       headerName: "Status",
       valueGetter: (params) => params?.data && params.data.status,
+      cellRenderer: StatusRenderer,
       flex: 1,
     },
     {
